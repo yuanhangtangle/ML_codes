@@ -1,1 +1,2 @@
 # ML_codes
+This repository is moved from my local hardisk where I used to store all my codes. It contains codes implementing some simple machine learning algorithms, most of which I learned in my spare time via books, papers, online resources, and courses in NJU. I make it public for those who just started their journey in the field of ML. Many bugs still exist in those codes, and I sill fix them when I update this repo from time to time.
