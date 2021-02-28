@@ -1,19 +1,15 @@
-<<<<<<< HEAD
 '''
 @author: Yuanhang Tang
 @file: ML_algo/clustering/agnes.py
 @github: https://github.com/yuanhangtangle/ML_codes/tree/main/ML_algo/clustering
 '''
 
-=======
->>>>>>> b8f2b8dc7ffaee67ca012f061c1487b923dc5e57
 import numpy as np
 import ML_algo.utils as utils
 import matplotlib.pyplot as plt
 
 class AGNES_cluster:
     def __init__(self, X, groups, ord = 2, dist = 'avg', store = []):
-<<<<<<< HEAD
         '''
         Implement the classic AGNES clustering method.
         params:
@@ -31,7 +27,6 @@ class AGNES_cluster:
         self.ord = ord
         self.set_dist = utils._set_dist(ord, dist)
         self.store_groups = dict() # number of groups -> cluster output
-=======
         self.train_x = np.asarray(X, dtype=np.float)
         self.num_samples = self.train_x.shape[0]
         self.num_features = self.train_x.shape[1]
@@ -40,7 +35,6 @@ class AGNES_cluster:
         self.ord = ord
         self.set_dist = utils._set_dist(ord, dist)
         self.store_groups = dict()
->>>>>>> b8f2b8dc7ffaee67ca012f061c1487b923dc5e57
         self.train(groups, store)
 
     def train(self, groups, store):
