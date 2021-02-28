@@ -1,4 +1,30 @@
 import numpy as np
+import matplotlib.pyplot as plt
+
+def jump(thresh):
+    '''
+    jump function. Returns 1 if x > thresh else 0.
+    '''
+    def _jp(x):
+        return 1 if x > thresh else 0
+
+    return np.vectorize(_jp)
+
+def logistic(x):
+    return 1/(1 + np.exp(-x))
+
+def softmax(x, all = False, byCol = True):
+    t = np.exp(x)
+    p = t/(1 + np.sum(t))
+    if all:
+        return np.c_[p, 1 - np.sum(p, axis = 1, keepdims=True)] if byCol \
+            else np.r_[p, 1 - np.sum(p, axis = 0, keepdims=True)]
+    else:
+        return p
+
+def accuracy_score(y_true,y_pred):
+    n = len(y_true)
+    return np.sum(y_true == y_pred)/n
 
 def soft_thresholding(lamda):
     '''
@@ -119,3 +145,88 @@ def info_print(obj, funcs = [], vars = []):
             value.append(obj.__getattribute__(key))
         pair_print(funcs + vars, value)
     return _info_print
+
+def Minkowski_distance(ord = '2'):
+    def _minkow(x, y):
+        return np.linalg.norm(x-y, ord=ord)
+    return _minkow
+
+def min_set_dist(X, Y, ord = '2'):
+    '''
+    compute the minimal distance of two sets.
+    parem X, Y: two sets whose rows represent the elements in that set
+    dist: measure, Minkowski distance. Specially, 2 for Euclidean distance, 1 for Manhattan distance.
+    '''
+    X = np.asarray(X, dtype=np.float)
+    Y = np.asarray(Y, dtype=np.float)
+    m = X.shape[0], n = Y.shape[0]
+    dist = Minkowski_distance(ord)
+    minDist = 0x7fffffff # well... C++ style?
+    for xrow in X:
+        for yrow in Y:
+            minDist = min(dist(xrow,yrow), minDist)
+    return minDist
+
+def max_set_dist(X, Y, ord = '2'):
+    '''
+    compute the maximal distance of two sets.
+    parem X, Y: two sets whose rows represent the elements in that set
+    dist: measure, Minkowski distance. Specially, 2 for Euclidean distance, 1 for Manhattan distance.
+    '''
+    X = np.asarray(X, dtype=np.float)
+    Y = np.asarray(Y, dtype=np.float)
+    m = X.shape[0], n = Y.shape[0]
+    dist = Minkowski_distance(ord)
+    minDist = 0
+    for xrow in X:
+        for yrow in Y:
+            minDist = max(dist(xrow,yrow), minDist)
+    return minDist
+
+def avg_set_dist(X, Y, ord = '2'):
+    '''
+    compute the average distance of two sets.
+    parem X, Y: two sets whose rows represent the elements in that set
+    dist: measure, Minkowski distance. Specially, 2 for Euclidean distance, 1 for Manhattan distance.
+    '''
+    X = np.asarray(X, dtype=np.float)
+    Y = np.asarray(Y, dtype=np.float)
+    m = X.shape[0]
+    n = Y.shape[0]
+    dist = Minkowski_distance(ord)
+    minDist = 0.
+    for xrow in X:
+        for yrow in Y:
+            minDist += dist(xrow,yrow)
+    return minDist/m/n
+
+def _min_set_dist(ord):
+    def _func(x, y):
+        return min_set_dist(x,y,ord)
+    return _func
+
+def _max_set_dist(ord):
+    def _func(x, y):
+        return max_set_dist(x,y,ord)
+    return _func
+
+def _avg_set_dist(ord):
+    def _func(x, y):
+        return avg_set_dist(x,y,ord)
+    return _func
+
+def _set_dist(ord, dist):
+    if dist == 'min':
+        return _min_set_dist(ord)
+    elif dist == 'max':
+        return _max_set_dist(ord)
+    elif dist == 'avg':
+        return _avg_set_dist(ord)
+    else:
+        raise Exception("Unknown Set Distance Measure. Choose From [min, max, avg]!")
+
+def circle(x,y,r, c = 'b'):
+    theta = np.linspace(-np.pi, np.pi, 100)
+    xs = x + np.cos(theta)
+    ys = y + np.sin(theta)
+    plt.plot(xs, ys, color = c)

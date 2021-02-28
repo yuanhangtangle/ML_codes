@@ -2,17 +2,18 @@
 @@author: Yuanhang Tang
 @@datetime: 2020/10/22
 @@description: this module implements the classic k means algorithm
+@@project: 
 '''
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as  plt
-class k_means_cluster:
+
+class k_means:
     def __init__(self , X, k, eps = 0.001, max_step = 100, times = 15): #(m,n) matrix, with m samples and n attributes
-        self.X = np.asarray(X)
-        self.group_num = k # number of cluster
-        mean_idx = np.random.choice(range(0,self.X.shape[0]),k)
-        self.group = np.zeros([self.X.shape[0], 1])
-        self.centers = self.X[mean_idx]
+        self.train_x = np.asarray(X)
+        self.num_groups = k # number of cluster
+        mean_idx = np.random.choice(range(0,self.train_x.shape[0]),k) # initial center
+        self.groups = np.zeros([self.train_x.shape[0], 1])
+        self.centers = self.train_x[mean_idx]
         self.dist = np.zeros([X.shape[0], 1])#square of Euclidean distance
         self.convergence = False
         self.loss = 0
@@ -45,7 +46,7 @@ class k_means_cluster:
         '''
         for i in range(X.shape[0]):
             idx, min = self._assign_single_sample(i)
-            (self.group[i, 0], self.dist[i, 0]) = (idx,min)
+            (self.groups[i, 0], self.dist[i, 0]) = (idx,min)
 
     def _assign_single_sample(self, i):
         '''
@@ -53,10 +54,10 @@ class k_means_cluster:
         :param i: index of the sample
         :return: idx of center, square of the Euclidean distance to this center
         '''
-        min = (self.X[i] - self.centers[0])@(self.X[i] - self.centers[0]).T
+        min = (self.train_x[i] - self.centers[0])@(self.train_x[i] - self.centers[0]).T
         idx = 0
-        for j in range(1, self.group_num):
-            t = (self.X[i] - self.centers[j])@(self.X[i] - self.centers[j]).T
+        for j in range(1, self.num_groups):
+            t = (self.train_x[i] - self.centers[j])@(self.train_x[i] - self.centers[j]).T
             if t < min:
                 (idx, min) = (j, t)
         return idx,min
@@ -65,18 +66,18 @@ class k_means_cluster:
         '''
         compute the center for every cluster
         '''
-        for i in range(self.group_num):
-            t = np.array((self.group == i), dtype=np.int32)
-            c = t*(self.X)
-            self.centers[i] = np.sum(t*(self.X), axis = 0)/np.sum(t)
+        for i in range(self.num_groups):
+            t = np.array((self.groups == i), dtype=np.int32)
+            c = t*(self.train_x)
+            self.centers[i] = np.sum(t*(self.train_x), axis = 0)/np.sum(t)
 
     def compute_loss(self):
-        self.loss = np.sum(self.dist)/self.group_num
+        self.loss = np.sum(self.dist)/self.num_groups
 
     def pred(self, x):
         min = (x - self.centers[0]) @ (x - self.centers[0]).T
         idx = 0
-        for j in range(1, self.group_num):
+        for j in range(1, self.num_groups):
             t = (x - self.centers[j]) @ (x - self.centers[j])
             if t < min:
                 (idx, min) = (j, t)
@@ -94,9 +95,9 @@ if __name__ == "__main__":
     xmean = [-2,2,0,0]
     ymean = [0,0,-2,2]
 
-    kmeans = k_means_cluster(X, 4, eps = 0.01)
-    X = np.c_[X,kmeans.group]
-    plt.scatter(X[:,0],X[:,1],c = X[:,2]/4)
+    kmeans = k_means(X, 4, eps = 0.01)
+    X = np.c_[X,kmeans.groups]
+    plt.scatter(X[:,0],X[:,1],c = origin/4)
     plt.scatter(xmean, ymean, marker='x', s = 120, label = 'original means')
     plt.scatter(kmeans.centers[:,0], kmeans.centers[:,1], marker='*', s = 120, label = 'k means centers')
     plt.legend()
