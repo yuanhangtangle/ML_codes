@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 '''
 @author: Yuanhang Tang
 @file: ML_algo/clustering/DBSCAN.py
@@ -5,14 +6,21 @@
 '''
 
 import numpy as np
+=======
+import numpy as np
+import random
+>>>>>>> b8f2b8dc7ffaee67ca012f061c1487b923dc5e57
 import matplotlib.pyplot as plt
 import ML_algo.utils as utils
 
 class DBSCAN:
     def __init__(self, X, eps = 1, minPts = 4, ord = 2, paired = False):
+<<<<<<< HEAD
         '''
         Density-Based Spatial Cluster of Application with Noise.
         '''
+=======
+>>>>>>> b8f2b8dc7ffaee67ca012f061c1487b923dc5e57
         self.train_x = np.asarray(X, dtype=np.float)
         self.num_samples = self.train_x.shape[0]
         self.num_features = self.train_x.shape[1]

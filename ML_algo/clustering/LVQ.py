@@ -1,9 +1,12 @@
+<<<<<<< HEAD
 '''
 @author: Yuanhang Tang
 @file: ML_algo/clustering/LVQ.py
 @github: https://github.com/yuanhangtangle/ML_codes/tree/main/ML_algo/clustering
 '''
 
+=======
+>>>>>>> b8f2b8dc7ffaee67ca012f061c1487b923dc5e57
 import numpy as np
 import random
 import matplotlib.pyplot as plt
