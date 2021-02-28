@@ -70,7 +70,7 @@ class DBSCAN:
 
 if __name__ == '__main__':
     size = 20
-    eps = 1
+    eps = 1.3
     minPts = 3
     x1 = np.random.multivariate_normal(mean=(-2, 0), cov=np.diag((1, 0.8)), size=size)
     x2 = np.random.multivariate_normal(mean=(2, 0), cov=np.diag((1, 1.5)), size=size)
