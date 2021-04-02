@@ -5,11 +5,9 @@
 '''
 
 import numpy as np
-import numpy as np
-import random
 import matplotlib.pyplot as plt
 import ML_algo.utils as utils
-
+import seaborn as sns
 class DBSCAN:
     def __init__(self, X, eps = 1, minPts = 4, ord = 2, paired = False):
         '''
@@ -26,6 +24,8 @@ class DBSCAN:
         self.minPts = minPts
         self.eps = eps
         self.pairs = []
+        self.core_samples = []
+        self.non_core_samples = []
         self.train(paired)
 
     def train(self, paired):
@@ -34,32 +34,32 @@ class DBSCAN:
         dist_mat = [[dist(self.train_x[i], self.train_x[j]) for j in range(self.num_samples)] for i in range(self.num_samples)]
         # construct adjacent list and core samples
         adj_list = [[] for i in range(self.num_samples)]
-        core_samples = []
         for i in range(self.num_samples):
             for j in range(self.num_samples):
                 if dist_mat[i][j] < self.eps:
                     adj_list[i].append(j)
-            if len(adj_list[i]) - 1 >= self.minPts: # NOT including itself
-                core_samples.append(i)
-
-        self.core_samples = core_samples
-        self.BFS(core_samples, adj_list, paired)
+            if (len(adj_list[i]) - 1) >= self.minPts: # NOT including itself
+                self.core_samples.append(i)
+            else:
+                self.non_core_samples.append(i)
+        self.BFS(adj_list, paired)
         self.groups = np.asarray(self.groups)
+        self.dist_mat = dist_mat
 
-    def BFS(self, core_samples, adj_list, paired):
+    def BFS(self, adj_list, paired):
         # bfs
         q = []
         visited = [False] * self.num_samples
         num_comp = 0
         # search until core_samples are all visited
-        for idx in core_samples:
+        for idx in self.core_samples:
             if visited[idx]: continue
             q.append(idx) # choose a core sample
             visited[idx] = True
             while q:
                 i = q.pop(0) # get first item
                 self.groups[i] = num_comp # mark it and
-                if i in core_samples: # if it is a core sample
+                if i in self.core_samples: # if it is a core sample
                     for j in adj_list[i]: # search its neighbors
                         if not visited[j]: # if it has not been visited
                             q.append(j)
@@ -70,7 +70,7 @@ class DBSCAN:
 
 if __name__ == '__main__':
     size = 20
-    eps = 1.3
+    eps = 0.8
     minPts = 3
     x1 = np.random.multivariate_normal(mean=(-2, 0), cov=np.diag((1, 0.8)), size=size)
     x2 = np.random.multivariate_normal(mean=(2, 0), cov=np.diag((1, 1.5)), size=size)
@@ -78,11 +78,14 @@ if __name__ == '__main__':
     x4 = np.random.multivariate_normal(mean=(0, 2), cov=np.diag((0.9, 0.9)), size=size)
     origin = np.array([[1] * size + [2] * size + [3] * size + [4] * size]).T
     X = np.r_[x1, x2, x3, x4]
-    X = np.c_[X, origin]
+    #X = np.c_[X, origin]
     xmean = [-2, 2, 0, 0]
     ymean = [0, 0, -2, 2]
 
     dbscan = DBSCAN(X, eps, minPts, paired=True)
+    for i in dbscan.non_core_samples:
+        print(i, X[i, 0:2])
+
     plt.subplot(121)
     # inliers
     plt.scatter(
@@ -99,9 +102,11 @@ if __name__ == '__main__':
         outliers_y,
         marker = '*'
     )
+    '''for (i,j) in zip(outliers_x, outliers_y):
+        plt.text(i,j,'[%.3f,%.3f]'%(i,j))'''
     # draw a circle for each outlier
-    for (x,y) in zip(outliers_x, outliers_y):
-        utils.circle(x,y,eps)
+    '''for (x,y) in zip(outliers_x, outliers_y):
+        utils.circle(x,y,eps)'''
 
     # draw connected component
     for (i,j) in dbscan.pairs:
@@ -112,6 +117,10 @@ if __name__ == '__main__':
     plt.scatter(X[:, 0], X[:, 1], c=origin / 4, marker='.')
     plt.title('origin')
     plt.show()
+
+    '''plt.figure()
+    sns.heatmap(np.asarray(dbscan.dist_mat) < eps, cmap = 'rainbow')
+    plt.show()'''
 
 
 

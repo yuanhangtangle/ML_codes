@@ -143,18 +143,6 @@ class linear_regression():
                 info_print=info_print)
 
         return loss_store
-        '''elif self.optimizer == 'PGD':
-            # print(self.optimizer)
-            info_print = utils.info_print(self, ['loss'])
-            loss_store = GradOpt.GD(
-                self,
-                ['train_x', 'train_y'],
-                'prox_gradient',
-                'PGD',
-                print_step=print_step,
-                info_print=info_print)
-            return loss_store'''
-
 
     def predict(self, x, add_const=True):
         if add_const:

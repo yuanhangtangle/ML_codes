@@ -146,12 +146,17 @@ def info_print(obj, funcs = [], vars = []):
         pair_print(funcs + vars, value)
     return _info_print
 
-def Minkowski_distance(ord = '2'):
+def Minkowski_distance(ord = 2):
     def _minkow(x, y):
         return np.linalg.norm(x-y, ord=ord)
     return _minkow
 
-def min_set_dist(X, Y, ord = '2'):
+def Minkowski_sum(ord = 2):
+    def _minkow(x):
+        return np.sum(np.power(np.abs(x), ord))
+    return _minkow
+
+def min_set_dist(X, Y, ord = 2):
     '''
     compute the minimal distance of two sets.
     parem X, Y: two sets whose rows represent the elements in that set
@@ -183,7 +188,7 @@ def max_set_dist(X, Y, ord = '2'):
             minDist = max(dist(xrow,yrow), minDist)
     return minDist
 
-def avg_set_dist(X, Y, ord = '2'):
+def avg_set_dist(X, Y, ord = 2):
     '''
     compute the average distance of two sets.
     parem X, Y: two sets whose rows represent the elements in that set
@@ -230,3 +235,24 @@ def circle(x,y,r, c = 'b'):
     xs = x + np.cos(theta)
     ys = y + np.sin(theta)
     plt.plot(xs, ys, color = c)
+
+def linear_kernel():
+    def _linear_kernel(x:np.ndarray, y:np.ndarray) -> np.ndarray:
+        return np.sum(x * y, axis = 1)
+    return _linear_kernel
+
+def poly_kernel(p: float):
+    def _poly_kernel(x:np.ndarray, y:np.ndarray) -> np.ndarray:
+        t = np.sum(x * y, axis = 1)
+        return np.power(t, p)
+    return _poly_kernel
+
+def rbf_kernel(gamma: float):
+    def _rbf_kernel(x:np.ndarray, y:np.ndarray) -> np.ndarray:
+        '''
+        x : each row is a sample
+        y : a row vector
+        '''
+        t = x - y
+        return np.exp(-np.sum(t * t, axis=1) * gamma)
+    return _rbf_kernel

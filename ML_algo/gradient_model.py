@@ -155,21 +155,19 @@ class Model():
     def model_info(self, ):
         print('=' * 30, 'MODEL INFO', '=' * 30)
         name = ('penalty', 'optimizer', 'C', 'params', 'samples', 'features')
-        if not self.is_fitted or not self.is_trained:
-            print('THIS MODEL HAS NOT BEEN FITTED OR TRAINED!')
-        else:
-            value = (
-                self.hyperparams['penalty'],
-                self.optimizer,
-                self.hyperparams['C'],
-                self.params['beta'].reshape(-1),
-                self.num_samples,
-                self.num_features
-            )
+        value = (
+            self.hyperparams['penalty'],
+            self.optimizer,
+            self.hyperparams['C'],
+            self.params['beta'].reshape(-1),
+            self.num_samples,
+            self.num_features
+        )
 
-            if self.optimizer in GradOpt.available_optimizers:
-                name += ['learning_rate', 'beta_momen', 'beta_RMS', 'eps_RMS']
-                value += [self.hyperparams[key] for key in name]
-            utils.pair_print(name, value)
+        if self.optimizer in GradOpt.available_optimizers:
+            name += ['learning_rate', 'beta_momen', 'beta_RMS', 'eps_RMS']
+            value += [self.hyperparams[key] for key in name]
+        utils.pair_print(name, value)
+        # end
         print('=' * 66, end = '\n\n')
 
